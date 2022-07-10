@@ -26,6 +26,15 @@ jobs:
       - name: Build Project
         run: ./gradlew build
 
+      - name: Run Espresso test
+        uses: ReactiveCircus/android-emulator-runner@v2.24.0
+        with:
+          api-level: 23
+          target: default
+          arch: x86
+          profile: Nexus 6
+          script: ./gradlew connectedCheck --stacktrace
+
       - name: Upload APK
         uses: actions/upload-artifact@v3.1.0
         with:
