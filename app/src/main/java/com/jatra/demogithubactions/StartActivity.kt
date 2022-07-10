@@ -13,6 +13,5 @@ class StartActivity: AppCompatActivity() {
         findViewById<Button>(R.id.tapMeButton).setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
-
     }
 }
