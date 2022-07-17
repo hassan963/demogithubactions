@@ -10,6 +10,8 @@ class StartActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
 
+
+
         findViewById<Button>(R.id.tapMeButton).setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
