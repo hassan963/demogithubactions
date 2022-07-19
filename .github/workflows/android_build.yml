@@ -14,11 +14,8 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2.4.2
 
-      - name: Upload html test report
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: lint.html
-          path: app/build/reports/lint-results-debug.html
+      - name: Run lint test
+        run: echo Run lint test
 
   unit-test:
     needs: [lint]
