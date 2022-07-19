@@ -5,10 +5,57 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2.4.2
 
+      - name: Upload html test report
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: lint.html
+          path: app/build/reports/lint-results-debug.html
+
+  unit-test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2.4.2
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: unit_test_report
+          path: app/build/reports/tests/testDebugUnitTest/
+
+#  instrumentation-test:
+#    needs: [ unit-test ]
+#    runs-on: macos-latest
+#    steps:
+#      - name: Checkout the code
+#        uses: actions/checkout@v2
+#
+#      - name: Run espresso tests
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: 29
+#          script: ./gradlew connectedCheck
+#
+#      - name: Upload test report
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: instrumentation_test_report
+#          path: app/build/reports/androidTests/connected/
+
+  package:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,22 +65,10 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11 
+          java-version: 11
 
-      - name: Run Tests
-        run: ./gradlew test
-
-      - name: Build Project
-        run: ./gradlew build
-
-#      - name: Run Espresso test
-#        uses: ReactiveCircus/android-emulator-runner@v2.24.0
-#        with:
-#          api-level: 23
-#          target: default
-#          arch: x86
-#          profile: Nexus 6
-#          script: ./gradlew connectedCheck --stacktrace
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v3.1.0
